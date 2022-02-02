@@ -5,13 +5,14 @@
   "main": "server.js",
   "scripts": {
     "start": "node server",
-    "dev":"nodemon server"
+    "dev": "nodemon server"
   },
   "author": "mahrokh sadro",
   "license": "MIT",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "config": "^3.3.7",
+    "dotenv": "^15.0.0",
     "express": "^4.17.2",
     "express-validator": "^6.14.0",
     "gravatar": "^1.8.2",
