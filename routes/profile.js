@@ -186,4 +186,99 @@ router.delete("/experience/:expId", auth, async (req, res) => {
   }
 });
 
+// @route    PUT /profile/education
+// @desc     Add profile education
+// @access   Private
+router.put(
+  "/education",
+  [
+    auth,
+    [
+      check("school", "School is required").notEmpty(),
+      check("degree", "Degree is required").notEmpty(),
+      check("fieldofstudy", "Field of study is required").notEmpty(),
+      check("from", "From date is required and needs to be from the past")
+        .notEmpty()
+        .custom((value, { req }) => (req.body.to ? value < req.body.to : true)),
+    ],
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        errors: errors.array(),
+      });
+    }
+    const { school, degree, fieldofstudy, from, to, current, description } =
+      req.body;
+
+    const newEducation = {
+      school,
+      degree,
+      fieldofstudy,
+      from,
+      to,
+      current,
+      description,
+    };
+
+    try {
+      const profile = await ProfileModel.findOne({
+        user: req.user.id,
+      });
+      profile.education.unshift(newEducation);
+
+      await profile.save();
+
+      res.json(profile);
+    } catch (err) {
+      res.status(500).send(`server error ${err}`);
+    }
+  }
+);
+
+// @route    DELETE /profile/education/:educationId
+// @desc     Delete experience from profile
+// @access   Private
+router.delete("/education/:eduId", auth, async (req, res) => {
+  try {
+    const profile = await ProfileModel.findOne({ user: req.user.id });
+
+    const removeIndex = profile.experience
+      .map((item) => item.id)
+      .indexOf(req.params.eduId);
+
+    profile.experience.splice(removeIndex, 1);
+
+    await profile.save();
+    res.json(profile);
+  } catch (err) {
+    return res.status(500).json({
+      message: "Server error",
+    });
+  }
+});
+
+// @route    GET profile/github/:username
+// @desc     Get user repos from Github
+// @access   Public
+router.get("/github/:username", async (req, res) => {
+  try {
+    const uri = encodeURI(
+      `https://api.github.com/users/${req.params.username}/repos?per_page=5&sort=created:asc&client_id=${process.env.GITHUB_CLIENT_ID}`
+    );
+    const headers = {
+      "user-agent": "node.js",
+      Authorization: `token ${config.get("githubToken")}`,
+    };
+
+    const repos = await axios.get(uri, { headers });
+    return res.json(repos.data);
+  } catch (err) {
+    return res.status(404).json({
+      message: "No Github profile found",
+    });
+  }
+});
+
 module.exports = router;
