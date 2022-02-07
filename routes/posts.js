@@ -35,4 +35,40 @@ router.post(
     }
   }
 );
+
+// @route    GET api/posts
+// @desc     Get all posts
+// @access   Public
+//pv too
+router.get("/", async (req, res) => {
+  try {
+    const posts = await PostModel.find().sort({ date: -1 });
+    res.json(posts);
+  } catch (err) {
+    res.status(500).send(`server error ${err}`);
+  }
+});
+
+// @route    GET api/posts/:id
+// @desc     Get post by ID
+// @access   Private
+
+router.get("/:id", auth, async (req, res) => {
+  try {
+    const post = await PostModel.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({
+        message: "Post not found",
+      });
+    }
+    res.json(post);
+  } catch (err) {
+    if (err.kind === "ObjectId") res.status(500).send(`server error ${err}`);
+  }
+});
+
+// @route    DELETE api/posts/:id
+// @desc     Delete a post
+// @access   Private
+//////////////////////////////////////////////////////////////////////////////////////////////
 module.exports = router;
