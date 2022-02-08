@@ -1,10 +1,10 @@
 import React from "react";
 import image from "./hero.jpg";
-
+import { Link } from "react-router-dom";
 const Landing = () => {
   return (
     <>
-      <section
+      {/* <section
         style={{
           backgroundImage: `url(${image})`,
           height: "700px",
@@ -23,6 +23,36 @@ const Landing = () => {
                 doloremque quod recusandae deleniti nostrum assumenda vel beatae
                 sed aut modi nesciunt porro quisquam voluptatem.
               </p>
+            </div>
+          </div>
+        </div>
+      </section> */}
+
+      <section
+        style={{
+          backgroundImage: `url(${image})`,
+          height: "700px",
+          // cover: "objectfit",
+          // backgroundPosition: "center",
+          // backgroundSize: "cover",
+          // backgroundRepeat: "no-repeat",
+        }}
+      >
+        {/* <div className="dark-overlay"> */}
+        <div>
+          <div className="landing-inner">
+            <h1 className="x-large">Developer Connector</h1>
+            <p className="lead">
+              Create a developer profile/portfolio, share posts and get help
+              from other developers
+            </p>
+            <div className="buttons">
+              <Link to="/register" className="btn btn-primary">
+                Sign Up
+              </Link>
+              <Link to="/login" className="btn btn-light">
+                Login
+              </Link>
             </div>
           </div>
         </div>
