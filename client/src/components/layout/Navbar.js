@@ -1,61 +1,66 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { logout } from "../../actions/auth";
 
-const Navbar = () => {
+const Navbar = ({ auth: { isAuthenticated }, logout }) => {
+  const authLinks = (
+    <ul>
+      <li>
+        <Link to="/profiles">Developers</Link>
+      </li>
+      <li>
+        <Link to="/posts">Posts</Link>
+      </li>
+      <li>
+        <Link to="/dashboard">
+          <i className="fas fa-user" />
+          <span className="hide-sm">Dashboard</span>
+        </Link>
+      </li>
+      <li>
+        <a onClick={logout} href="#!">
+          <i className="fas fa-sign-out-alt" />
+          <span className="hide-sm">Logout</span>
+        </a>
+      </li>
+    </ul>
+  );
+
+  const guestLinks = (
+    <ul>
+      <li>
+        <Link to="/profiles">Developers</Link>
+      </li>
+      <li>
+        <Link to="/register">Register</Link>
+      </li>
+      <li>
+        <Link to="/login">Login</Link>
+      </li>
+    </ul>
+  );
+
   return (
-    // <div>
-    //   <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-bottom">
-    //     <div className="container px-4 px-lg-5">
-    //       <a className="navbar-brand" href="#!">
-    //         Start Bootstrap
-    //       </a>
-    //       <button
-    //         className="navbar-toggler"
-    //         type="button"
-    //         data-bs-toggle="collapse"
-    //         data-bs-target="#navbarResponsive"
-    //         aria-controls="navbarResponsive"
-    //         aria-expanded="false"
-    //         aria-label="Toggle navigation"
-    //       >
-    //         <span className="navbar-toggler-icon"></span>
-    //       </button>
-    //       <div className="collapse navbar-collapse" id="navbarResponsive">
-    //         <ul className="navbar-nav ml-auto">
-    //           <li className="nav-item active">
-    //             <Link to="/" className="nav-link">
-    //               Home
-    //             </Link>
-    //           </li>
-    //           <li className="nav-item">
-    //             <Link to="" className="nav-link">
-    //               About
-    //             </Link>
-    //           </li>
-    //           <li className="nav-item">
-    //             <Link to="/login" className="nav-link">
-    //               Login
-    //             </Link>
-    //           </li>
-    //           <li className="nav-item">
-    //             <Link to="/register" className="nav-link">
-    //               Register
-    //             </Link>
-    //           </li>
-    //         </ul>
-    //       </div>
-    //     </div>
-    //   </nav>
-    // </div>
-
     <nav className="navbar bg-dark">
       <h1>
         <Link to="/">
           <i className="fas fa-code" /> DevConnector
         </Link>
       </h1>
+      <Fragment>{isAuthenticated ? authLinks : guestLinks}</Fragment>
     </nav>
   );
 };
 
-export default Navbar;
+Navbar.propTypes = {
+  logout: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+
+export default connect(mapStateToProps, { logout })(Navbar);
