@@ -6,6 +6,9 @@ import Navbar from "../src/components/layout/Navbar";
 import Register from "../src/components/auth/Register";
 import Login from "../src/components/auth/Login";
 import Alert from "./components/layout/Alert";
+import Dashboard from "./components/dashboard/Dashboard";
+import PrivateRoute from '../src/components/routing/PrivateRoute';
+import ProfileForm from './components/profile-forms/ProfileForm';
 
 //redux
 import { Provider } from "react-redux";
@@ -36,13 +39,17 @@ const App = () => {
     <>
       <Provider store={store}>
         <Router>
-          <Navbar />
+          <Navbar style={{ marginBottom: "200px" }}/>
           <Alert />
           <Routes>
             <Route exact path="/" element={<Landing />} />
             <Route exact path="/register" element={<Register />} />
             <Route exact path="/login" element={<Login />} />
-            {/*  <Route exact path="/update" element={<UpdatePage />} /> */}
+            <Route exact path="/dashboard"  element={<PrivateRoute component={Dashboard} />} />
+            <Route
+            path="create-profile"
+            element={<PrivateRoute component={ProfileForm} />}
+          />
           </Routes>
         </Router>
       </Provider>
